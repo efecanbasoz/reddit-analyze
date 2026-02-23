@@ -2,12 +2,12 @@
 
 Reddit Analyze is a Next.js app for discovering trends and idea opportunities across multiple subreddits.
 
-It aggregates Reddit posts by category, scope, language, listing type, and timeframe, then helps you quickly inspect high-signal threads.
+It aggregates Reddit posts by category, region scope, listing type, and timeframe, then helps you quickly inspect high-signal threads.
 
 ## Features
 
 - Multi-subreddit discovery with category presets
-- Scope and language filters (`global`, `us`, `turkey`, `en`, `tr`)
+- Region scope filters (`world`, `us`) with English-only content focus
 - Listing controls (`hot`, `top`, `new`, `rising`)
 - Time-based filtering (`hour` to `all`)
 - Optional search query and pagination (`after` token)

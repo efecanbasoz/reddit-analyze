@@ -5,12 +5,11 @@ import { FilterPanel } from "@/components/filter-panel";
 import { ResultsGrid } from "@/components/results-grid";
 import { analyzeReddit } from "./actions";
 import { Radar } from "lucide-react";
-import type { Scope, Language, ListingType, TimeFrame, RedditPost } from "@/lib/types";
+import type { Scope, ListingType, TimeFrame, RedditPost } from "@/lib/types";
 import type { SortBy, ViewMode } from "@/components/results-toolbar";
 
 export default function HomePage() {
   const [scope, setScope] = useState<Scope>("global");
-  const [language, setLanguage] = useState<Language>("en");
   const [listing, setListing] = useState<ListingType>("hot");
   const [timeFrame, setTimeFrame] = useState<TimeFrame>("week");
   const [categories, setCategories] = useState<string[]>(["saas", "aiDevTools"]);
@@ -47,7 +46,6 @@ export default function HomePage() {
     try {
       const result = await analyzeReddit({
         scope,
-        language,
         listing,
         timeFrame,
         limit: 50,
@@ -74,7 +72,6 @@ export default function HomePage() {
     try {
       const result = await analyzeReddit({
         scope,
-        language,
         listing,
         timeFrame,
         limit: 50,
@@ -116,8 +113,6 @@ export default function HomePage() {
             <FilterPanel
               scope={scope}
               setScope={setScope}
-              language={language}
-              setLanguage={setLanguage}
               listing={listing}
               setListing={setListing}
               timeFrame={timeFrame}

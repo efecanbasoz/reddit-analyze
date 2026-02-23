@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Reddit Analyzer - Topic Finder",
   description:
-    "Reddit'te trending konulari kesfet, proje fikirleri bul. Subreddit'lerde hot, top ve rising post'lari analiz et.",
+    "Discover trending Reddit discussions and uncover startup, marketing, and product ideas.",
   keywords: [
     "reddit",
     "analyzer",
@@ -31,16 +31,16 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Reddit Analyzer - Topic Finder & Idea Discovery",
     description:
-      "Reddit'te trending konulari kesfet, proje fikirleri bul. Marketing, SaaS, AI ve daha fazlasi.",
+      "Discover trending Reddit discussions for marketing, SaaS, AI, and product ideation.",
     type: "website",
-    locale: "tr_TR",
+    locale: "en_US",
     siteName: "Reddit Analyzer",
   },
   twitter: {
     card: "summary_large_image",
     title: "Reddit Analyzer - Topic Finder",
     description:
-      "Reddit'te trending konulari kesfet, proje fikirleri bul.",
+      "Discover trending Reddit discussions and find new project ideas.",
   },
   icons: {
     icon: "/favicon.ico",
@@ -53,7 +53,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="tr" className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body className="antialiased min-h-screen font-[family-name:var(--font-geist-sans)]">
         {children}
       </body>

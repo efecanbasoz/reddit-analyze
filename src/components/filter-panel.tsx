@@ -3,14 +3,12 @@
 import { CategoryChip } from "./category-chip";
 import { SubredditInput } from "./subreddit-input";
 import { SegmentedControl } from "./segmented-control";
-import { Search, Globe, MapPin, Languages, Clock, TrendingUp, Loader2 } from "lucide-react";
-import type { Scope, Language, ListingType, TimeFrame } from "@/lib/types";
+import { Search, Globe, MapPin, Clock, TrendingUp, Loader2 } from "lucide-react";
+import type { Scope, ListingType, TimeFrame } from "@/lib/types";
 
 interface FilterPanelProps {
   scope: Scope;
   setScope: (s: Scope) => void;
-  language: Language;
-  setLanguage: (l: Language) => void;
   listing: ListingType;
   setListing: (l: ListingType) => void;
   timeFrame: TimeFrame;
@@ -27,14 +25,8 @@ interface FilterPanelProps {
 }
 
 const SCOPE_OPTIONS: { value: Scope; label: string; icon: React.ReactNode }[] = [
-  { value: "global", label: "Global", icon: <Globe size={14} /> },
+  { value: "global", label: "World", icon: <Globe size={14} /> },
   { value: "us", label: "US", icon: <MapPin size={14} /> },
-  { value: "turkey", label: "Turkey", icon: <MapPin size={14} /> },
-];
-
-const LANGUAGE_OPTIONS: { value: Language; label: string }[] = [
-  { value: "en", label: "English" },
-  { value: "tr", label: "Turkish" },
 ];
 
 const LISTING_OPTIONS: { value: ListingType; label: string }[] = [
@@ -57,7 +49,6 @@ const CATEGORY_OPTIONS = [
   { key: "marketing", label: "Marketing", description: "r/marketing, r/SEO, r/digital_marketing..." },
   { key: "saas", label: "SaaS & Startup", description: "r/SaaS, r/indiehackers, r/microsaas..." },
   { key: "aiDevTools", label: "AI & Dev Tools", description: "r/ClaudeAI, r/OpenAI, r/webdev..." },
-  { key: "turkish", label: "Turkish", description: "r/Turkey, r/Turkiye..." },
 ];
 
 export function FilterPanel(props: FilterPanelProps) {
@@ -81,8 +72,8 @@ export function FilterPanel(props: FilterPanelProps) {
         </div>
       </div>
 
-      {/* Scope & Language */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {/* Scope */}
+      <div className="grid grid-cols-1 gap-4">
         <div>
           <label className="block text-xs font-medium text-zinc-500 uppercase tracking-wider mb-2">
             <Globe size={12} className="inline mr-1" aria-hidden="true" /> Scope
@@ -92,17 +83,6 @@ export function FilterPanel(props: FilterPanelProps) {
             value={props.scope}
             onChange={props.setScope}
             ariaLabel="Scope selection"
-          />
-        </div>
-        <div>
-          <label className="block text-xs font-medium text-zinc-500 uppercase tracking-wider mb-2">
-            <Languages size={12} className="inline mr-1" aria-hidden="true" /> Language
-          </label>
-          <SegmentedControl
-            options={LANGUAGE_OPTIONS}
-            value={props.language}
-            onChange={props.setLanguage}
-            ariaLabel="Language selection"
           />
         </div>
       </div>

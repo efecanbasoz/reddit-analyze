@@ -2,7 +2,6 @@
 
 import { ArrowUpCircle, MessageCircle, ExternalLink, Clock } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
-import { tr } from "date-fns/locale";
 import type { RedditPost } from "@/lib/types";
 
 interface PostCardProps {
@@ -19,7 +18,6 @@ function formatScore(n: number): string {
 export function PostCard({ post, compact = false, index = 0 }: PostCardProps) {
   const timeAgo = formatDistanceToNow(new Date(post.createdUtc * 1000), {
     addSuffix: true,
-    locale: tr,
   });
 
   return (

@@ -28,13 +28,11 @@ export const SUBREDDIT_PRESETS = {
     "webdev",
     "nextjs",
   ],
-  turkish: ["Turkey", "KGBTR", "Turkiye"],
 } as const;
 
 export const SCOPE_SUBREDDIT_MAP: Record<Scope, string[]> = {
   global: [],
   us: ["smallbusiness", "Entrepreneur", "startups"],
-  turkey: ["Turkey", "Turkiye", "KGBTR"],
 };
 
 export const DEFAULT_LIMIT = 25;

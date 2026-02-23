@@ -3,12 +3,11 @@
 import { fetchMultipleSubreddits } from "@/lib/reddit-api";
 import { SUBREDDIT_PRESETS, SCOPE_SUBREDDIT_MAP } from "@/lib/constants";
 import { sanitizeSubreddit, sanitizeSearchQuery } from "@/lib/sanitize";
-import type { FetchOptions, ListingType, TimeFrame, Scope, Language, RedditListing } from "@/lib/types";
+import type { FetchOptions, ListingType, TimeFrame, Scope, RedditListing } from "@/lib/types";
 
 const VALID_LISTINGS: ListingType[] = ["hot", "top", "new", "rising"];
 const VALID_TIMEFRAMES: TimeFrame[] = ["hour", "day", "week", "month", "year", "all"];
-const VALID_SCOPES: Scope[] = ["global", "us", "turkey"];
-const VALID_LANGUAGES: Language[] = ["en", "tr"];
+const VALID_SCOPES: Scope[] = ["global", "us"];
 
 // Simple in-memory rate limiter (best-effort; resets across serverless cold starts)
 let lastRequestTime = 0;
@@ -16,7 +15,6 @@ const MIN_REQUEST_INTERVAL = 3000; // 3 seconds between requests
 
 interface AnalyzeRequest {
   scope: Scope;
-  language: Language;
   listing: ListingType;
   timeFrame: TimeFrame;
   limit: number;
@@ -47,10 +45,6 @@ export async function analyzeReddit(
     if (!VALID_SCOPES.includes(request.scope)) {
       return { success: false, error: "Invalid scope." };
     }
-    if (!VALID_LANGUAGES.includes(request.language)) {
-      return { success: false, error: "Invalid language." };
-    }
-
     // Clamp limit
     const limit = Math.max(1, Math.min(100, request.limit));
 
@@ -75,12 +69,6 @@ export async function analyzeReddit(
       if (cleaned) subreddits.add(cleaned);
     }
 
-    if (request.language === "tr") {
-      for (const sr of SUBREDDIT_PRESETS.turkish) {
-        subreddits.add(sr);
-      }
-    }
-
     if (subreddits.size === 0) {
       return { success: false, error: "Select at least one subreddit." };
     }
@@ -100,7 +88,6 @@ export async function analyzeReddit(
       timeFrame: request.timeFrame,
       limit,
       scope: request.scope,
-      language: request.language,
       searchQuery,
       after,
     };
