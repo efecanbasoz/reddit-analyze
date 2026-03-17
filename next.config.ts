@@ -25,7 +25,7 @@ const securityHeaders = [
   {
     key: "Content-Security-Policy",
     value:
-      "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.reddit.com https://external-preview.redd.it https://preview.redd.it; connect-src 'self' https://www.reddit.com; font-src 'self';",
+      "default-src 'self'; base-uri 'self'; frame-ancestors 'none'; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.reddit.com https://external-preview.redd.it https://preview.redd.it; connect-src 'self' https://www.reddit.com; font-src 'self'; form-action 'self';",
   },
 ];
 

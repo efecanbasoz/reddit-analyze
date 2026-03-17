@@ -7,5 +7,5 @@ export function sanitizeSubreddit(name: string): string | null {
 }
 
 export function sanitizeSearchQuery(query: string): string {
-  return query.slice(0, MAX_QUERY_LENGTH).replace(/[<>"'&`]/g, "");
+  return query.replace(/[<>"'&`]/g, "").slice(0, MAX_QUERY_LENGTH);
 }

@@ -37,5 +37,8 @@ export const SCOPE_SUBREDDIT_MAP: Record<Scope, string[]> = {
 
 export const DEFAULT_LIMIT = 25;
 export const MAX_LIMIT = 100;
+export const MAX_CUSTOM_SUBREDDITS = 10;
+export const MAX_TOTAL_SUBREDDITS = 25;
+export const MAX_MULTI_SUBREDDIT_PATH_LENGTH = 120;
 export const API_BASE_URL = "https://www.reddit.com";
 export const USER_AGENT = "reddit-analyzer/1.0 (topic-finder)";
