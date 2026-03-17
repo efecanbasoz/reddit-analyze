@@ -1,17 +1,22 @@
 "use server";
 
+import { headers } from "next/headers";
 import { fetchMultipleSubreddits } from "@/lib/reddit-api";
-import { SUBREDDIT_PRESETS, SCOPE_SUBREDDIT_MAP } from "@/lib/constants";
+import {
+  MAX_CUSTOM_SUBREDDITS,
+  MAX_MULTI_SUBREDDIT_PATH_LENGTH,
+  MAX_TOTAL_SUBREDDITS,
+  SUBREDDIT_PRESETS,
+  SCOPE_SUBREDDIT_MAP,
+} from "@/lib/constants";
+import { buildRateLimitKey, createRateLimiter } from "@/lib/rate-limit";
 import { sanitizeSubreddit, sanitizeSearchQuery } from "@/lib/sanitize";
 import type { FetchOptions, ListingType, TimeFrame, Scope, RedditListing } from "@/lib/types";
 
 const VALID_LISTINGS: ListingType[] = ["hot", "top", "new", "rising"];
 const VALID_TIMEFRAMES: TimeFrame[] = ["hour", "day", "week", "month", "year", "all"];
 const VALID_SCOPES: Scope[] = ["global", "us"];
-
-// Simple in-memory rate limiter (best-effort; resets across serverless cold starts)
-let lastRequestTime = 0;
-const MIN_REQUEST_INTERVAL = 3000; // 3 seconds between requests
+const requestLimiter = createRateLimiter(3_000);
 
 interface AnalyzeRequest {
   scope: Scope;
@@ -28,12 +33,11 @@ export async function analyzeReddit(
   request: AnalyzeRequest
 ): Promise<{ success: true; data: RedditListing } | { success: false; error: string }> {
   try {
-    // Rate limiting
-    const now = Date.now();
-    if (now - lastRequestTime < MIN_REQUEST_INTERVAL) {
+    const requestHeaders = await headers();
+    const rateLimitKey = buildRateLimitKey(requestHeaders, `analyze:${request.scope}:${request.listing}`);
+    if (!requestLimiter.allow(rateLimitKey)) {
       return { success: false, error: "Too many requests. Please wait a moment and try again." };
     }
-    lastRequestTime = now;
 
     // Validate enum values
     if (!VALID_LISTINGS.includes(request.listing)) {
@@ -73,9 +77,21 @@ export async function analyzeReddit(
       return { success: false, error: "Select at least one subreddit." };
     }
 
+    if (request.customSubreddits.length > MAX_CUSTOM_SUBREDDITS) {
+      return { success: false, error: `Too many custom subreddits. Maximum ${MAX_CUSTOM_SUBREDDITS} allowed.` };
+    }
+
     const searchQuery = request.searchQuery
       ? sanitizeSearchQuery(request.searchQuery)
       : undefined;
+
+    if (subreddits.size > MAX_TOTAL_SUBREDDITS) {
+      return { success: false, error: `Too many subreddits selected. Maximum ${MAX_TOTAL_SUBREDDITS} allowed.` };
+    }
+
+    if (!searchQuery && Array.from(subreddits).join("+").length > MAX_MULTI_SUBREDDIT_PATH_LENGTH) {
+      return { success: false, error: "Combined subreddit path is too large." };
+    }
 
     // Sanitize after token (alphanumeric + underscore, max 50 chars)
     const after = request.after && /^[a-zA-Z0-9_]{1,50}$/.test(request.after)
