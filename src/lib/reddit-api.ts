@@ -6,7 +6,13 @@ import type {
   TimeFrame,
   SortType,
 } from "./types";
-import { API_BASE_URL, USER_AGENT, MAX_LIMIT, DEFAULT_LIMIT } from "./constants";
+import {
+  API_BASE_URL,
+  USER_AGENT,
+  MAX_LIMIT,
+  DEFAULT_LIMIT,
+  MAX_MULTI_SUBREDDIT_PATH_LENGTH,
+} from "./constants";
 
 function mapRawPost(raw: Record<string, unknown>): RedditPost {
   return {
@@ -28,17 +34,22 @@ function mapRawPost(raw: Record<string, unknown>): RedditPost {
   };
 }
 
-function parseRedditListing(json: unknown): RedditListing {
+export function parseRedditListing(json: unknown): RedditListing {
   const data = (json as { data?: { children?: unknown[]; after?: string; before?: string; dist?: number } })?.data;
   if (!data || !Array.isArray(data.children)) {
-    return { posts: [], after: null, before: null, totalCount: 0 };
+    throw new Error("Malformed Reddit response");
   }
+
+  const posts = data.children.map((child) => {
+    if (!child || typeof child !== "object" || !("data" in child) || !child.data || typeof child.data !== "object") {
+      throw new Error("Malformed Reddit response");
+    }
+
+    return mapRawPost(child.data as Record<string, unknown>);
+  });
+
   return {
-    posts: data.children
-      .filter((child): child is { data: Record<string, unknown> } =>
-        child != null && typeof child === "object" && "data" in child
-      )
-      .map((child) => mapRawPost(child.data)),
+    posts,
     after: typeof data.after === "string" ? data.after : null,
     before: typeof data.before === "string" ? data.before : null,
     totalCount: Number(data.dist) || 0,
@@ -126,5 +137,9 @@ export async function fetchMultipleSubreddits(
   // Use Reddit's multi-subreddit endpoint: r/sub1+sub2+sub3/listing.json
   // This returns a single listing with consistent after tokens for pagination
   const multiSub = subreddits.join("+");
+  if (multiSub.length > MAX_MULTI_SUBREDDIT_PATH_LENGTH) {
+    throw new Error("Combined subreddit path is too large.");
+  }
+
   return fetchSubredditPosts(multiSub, listing, timeFrame, limit, after);
 }
