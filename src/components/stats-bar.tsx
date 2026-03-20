@@ -18,13 +18,13 @@ export function StatsBar({ posts }: StatsBarProps) {
     return [
       { label: "Post", value: posts.length, icon: <BarChart3 size={14} /> },
       { label: "Subreddit", value: uniqueSubreddits, icon: <Hash size={14} /> },
-      { label: "Ort. Score", value: avgScore, icon: <TrendingUp size={14} /> },
-      { label: "Toplam Yorum", value: totalComments.toLocaleString(), icon: <MessageCircle size={14} /> },
+      { label: "Avg. Score", value: avgScore, icon: <TrendingUp size={14} /> },
+      { label: "Total Comments", value: totalComments.toLocaleString(), icon: <MessageCircle size={14} /> },
     ];
   }, [posts]);
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3" role="region" aria-label="Sonuc istatistikleri">
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3" role="region" aria-label="Results statistics">
       {stats.map((stat) => (
         <div
           key={stat.label}

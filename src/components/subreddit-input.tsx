@@ -30,8 +30,8 @@ export function SubredditInput({ subreddits, onAdd, onRemove }: SubredditInputPr
             value={value}
             onChange={(e) => setValue(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleAdd())}
-            placeholder="subreddit adi"
-            aria-label="Subreddit adi girin"
+            placeholder="subreddit name"
+            aria-label="Enter subreddit name"
             className="w-full pl-8 pr-4 py-2.5 bg-zinc-800/50 border border-zinc-700/50 rounded-xl text-sm text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/50 focus:border-orange-500/50 transition-all"
           />
         </div>
@@ -39,7 +39,7 @@ export function SubredditInput({ subreddits, onAdd, onRemove }: SubredditInputPr
           type="button"
           onClick={handleAdd}
           className="px-3 py-2.5 bg-zinc-800 border border-zinc-700/50 rounded-xl text-zinc-400 hover:text-orange-400 hover:border-orange-500/50 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/50"
-          aria-label="Subreddit ekle"
+          aria-label="Add subreddit"
         >
           <Plus size={16} />
         </button>
@@ -56,7 +56,7 @@ export function SubredditInput({ subreddits, onAdd, onRemove }: SubredditInputPr
                 type="button"
                 onClick={() => onRemove(sr)}
                 className="text-zinc-500 hover:text-red-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/50 rounded-sm"
-                aria-label={`${sr} subredditini kaldir`}
+                aria-label={`Remove ${sr}`}
               >
                 <X size={12} />
               </button>

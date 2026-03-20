@@ -15,8 +15,8 @@ interface ResultsToolbarProps {
 
 const SORT_OPTIONS: { value: SortBy; label: string; icon: React.ReactNode }[] = [
   { value: "score", label: "Score", icon: <TrendingUp size={13} /> },
-  { value: "comments", label: "Yorum", icon: <MessageCircle size={13} /> },
-  { value: "date", label: "Tarih", icon: <Calendar size={13} /> },
+  { value: "comments", label: "Comments", icon: <MessageCircle size={13} /> },
+  { value: "date", label: "Date", icon: <Calendar size={13} /> },
 ];
 
 export function ResultsToolbar({
@@ -32,7 +32,7 @@ export function ResultsToolbar({
       <div className="flex items-center gap-2">
         <span className="flex items-center gap-1.5 text-zinc-500 text-xs">
           <ArrowUpDown size={12} />
-          Sirala:
+          Sort:
         </span>
         <div className="flex gap-1">
           {SORT_OPTIONS.map((opt) => (
@@ -45,7 +45,7 @@ export function ResultsToolbar({
                   ? "bg-orange-500/15 text-orange-400 border border-orange-500/30"
                   : "text-zinc-500 hover:text-zinc-300 border border-transparent"
               }`}
-              aria-label={`${opt.label} gore sirala`}
+              aria-label={`Sort by ${opt.label}`}
               aria-pressed={sortBy === opt.value}
             >
               {opt.icon}
@@ -57,7 +57,7 @@ export function ResultsToolbar({
 
       {/* Center: Count */}
       <span className="text-xs text-zinc-600 hidden sm:block">
-        {totalCount} sonuc
+        {totalCount} results
       </span>
 
       {/* Right: View mode toggle */}
@@ -70,7 +70,7 @@ export function ResultsToolbar({
               ? "bg-zinc-700/50 text-orange-400"
               : "text-zinc-500 hover:text-zinc-300"
           }`}
-          aria-label="Genis gorunum"
+          aria-label="Expanded view"
           aria-pressed={viewMode === "expanded"}
         >
           <LayoutGrid size={14} />
@@ -83,7 +83,7 @@ export function ResultsToolbar({
               ? "bg-zinc-700/50 text-orange-400"
               : "text-zinc-500 hover:text-zinc-300"
           }`}
-          aria-label="Kompakt gorunum"
+          aria-label="Compact view"
           aria-pressed={viewMode === "compact"}
         >
           <LayoutList size={14} />
