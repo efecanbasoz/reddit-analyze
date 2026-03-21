@@ -9,21 +9,26 @@
 | Severity | Count | Fixed |
 |----------|-------|-------|
 | HIGH | 2 | 2 |
-| MEDIUM | 8 | 1 |
+| MEDIUM | 8 | 2 |
 | LOW | 3 | 2 |
-| **Total** | **13** | **5** |
+| **Total** | **13** | **6** |
 
-## Fixed
+## Fixed (Round 1)
 
-- **SEC-001 (HIGH)**: Rate limit key simplified to client IP only — not spoofable via User-Agent/Accept-Language
-- **SEC-003 (MEDIUM)**: Category lookup guarded with Object.hasOwn, arrays validated before iteration, count checked before loop
-- **SEC-004 (LOW)**: Error catch returns generic message, logs details server-side
-- **QA-001 (HIGH)**: Documented — global search fallback when multiple subreddits with query
+- **SEC-001 (HIGH)**: Rate limit key simplified to client IP only
+- **SEC-003 (MEDIUM)**: Category lookup guarded with Object.hasOwn
+- **SEC-004 (LOW)**: Error catch returns generic message
 
-## Documented (not fixing now)
+## Fixed (Round 2 — Deferred)
 
-- **SEC-002 (MEDIUM)**: In-memory rate limit store unbounded — needs Redis for production
-- **SEC-005 (LOW)**: CSP unsafe-inline — Next.js requirement, document nonce migration path
+- **QA-001 (HIGH)**: Multi-subreddit search now uses `/r/sub1+sub2/search.json`
+  with `restrict_sr=1` instead of falling back to global `/search.json`.
+- **SEC-002 (MEDIUM)**: Rate limit store capped at 10,000 entries with overflow
+  pruning to prevent unbounded memory growth.
+
+## Remaining
+
+- **SEC-005 (LOW)**: CSP unsafe-inline — Next.js requirement
 - **QA-002-010**: Type safety, accessibility, error handling, testing gaps
 
 ## Positive Findings
