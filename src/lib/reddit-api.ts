@@ -56,6 +56,7 @@ export function parseRedditListing(json: unknown): RedditListing {
   };
 }
 
+// QA-007: Catch timeout/network errors and return stable app-level messages
 async function fetchRedditJson(url: string, errorLabel: string): Promise<RedditListing> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 10000);
@@ -68,11 +69,19 @@ async function fetchRedditJson(url: string, errorLabel: string): Promise<RedditL
     });
 
     if (!response.ok) {
-      throw new Error(`${errorLabel}: ${response.status}`);
+      throw new Error(`${errorLabel}: Reddit returned ${response.status}`);
     }
 
     const json: unknown = await response.json();
     return parseRedditListing(json);
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "AbortError") {
+      throw new Error(`${errorLabel}: Request timed out`);
+    }
+    if (error instanceof TypeError && error.message.includes("fetch")) {
+      throw new Error(`${errorLabel}: Network error`);
+    }
+    throw error;
   } finally {
     clearTimeout(timeout);
   }

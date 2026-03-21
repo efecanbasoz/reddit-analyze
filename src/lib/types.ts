@@ -33,7 +33,6 @@ export interface FetchOptions {
   listing: ListingType;
   timeFrame: TimeFrame;
   limit: number;
-  scope: Scope;
   searchQuery?: string;
   after?: string;
 }

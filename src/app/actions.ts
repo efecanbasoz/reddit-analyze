@@ -112,12 +112,12 @@ export async function analyzeReddit(
       ? request.after
       : undefined;
 
+    // QA-008: scope removed from FetchOptions (was dead API surface)
     const options: FetchOptions = {
       subreddits: Array.from(subreddits),
       listing: request.listing,
       timeFrame: request.timeFrame,
       limit,
-      scope: request.scope,
       searchQuery,
       after,
     };

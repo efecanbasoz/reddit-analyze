@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { X, Plus } from "lucide-react";
+import { sanitizeSubreddit } from "@/lib/sanitize";
 
 interface SubredditInputProps {
   subreddits: string[];
@@ -11,10 +12,17 @@ interface SubredditInputProps {
 
 export function SubredditInput({ subreddits, onAdd, onRemove }: SubredditInputProps) {
   const [value, setValue] = useState("");
+  const [validationError, setValidationError] = useState("");
 
+  // QA-005: Client-side validation using shared sanitizer
   function handleAdd() {
-    const cleaned = value.trim().replace(/^r\//, "");
-    if (cleaned && !subreddits.includes(cleaned)) {
+    const cleaned = sanitizeSubreddit(value);
+    if (!cleaned) {
+      setValidationError("Invalid subreddit name (letters, numbers, underscores only)");
+      return;
+    }
+    setValidationError("");
+    if (!subreddits.includes(cleaned)) {
       onAdd(cleaned);
       setValue("");
     }
@@ -44,6 +52,9 @@ export function SubredditInput({ subreddits, onAdd, onRemove }: SubredditInputPr
           <Plus size={16} />
         </button>
       </div>
+      {validationError && (
+        <p className="text-red-400 text-xs">{validationError}</p>
+      )}
       {subreddits.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {subreddits.map((sr) => (
