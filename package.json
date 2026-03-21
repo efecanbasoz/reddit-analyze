@@ -2,6 +2,7 @@
   "name": "reddit-analyze",
   "version": "0.1.0",
   "private": true,
+  "license": "Apache-2.0",
   "description": "Reddit topic analyzer for idea discovery and trend exploration",
   "scripts": {
     "dev": "next dev",
