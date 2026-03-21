@@ -34,7 +34,11 @@ export async function analyzeReddit(
 ): Promise<{ success: true; data: RedditListing } | { success: false; error: string }> {
   try {
     const requestHeaders = await headers();
-    const rateLimitKey = buildRateLimitKey(requestHeaders, `analyze:${request.scope}:${request.listing}`);
+    // SEC-001: Use only trusted IP for rate limiting, not mutable headers
+    const clientIp = requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim()
+      || requestHeaders.get("x-real-ip")?.trim()
+      || "anonymous";
+    const rateLimitKey = `analyze:${clientIp}`;
     if (!requestLimiter.allow(rateLimitKey)) {
       return { success: false, error: "Too many requests. Please wait a moment and try again." };
     }
@@ -52,15 +56,23 @@ export async function analyzeReddit(
     // Clamp limit
     const limit = Math.max(1, Math.min(100, request.limit));
 
+    // SEC-003: Validate array types and sizes before processing
+    if (!Array.isArray(request.categories) || !Array.isArray(request.customSubreddits)) {
+      return { success: false, error: "Invalid request format." };
+    }
+    if (request.categories.length > 20) {
+      return { success: false, error: "Too many categories." };
+    }
+
     // Build subreddit list
     const subreddits = new Set<string>();
 
     for (const category of request.categories) {
+      if (typeof category !== "string") continue;
+      if (!Object.hasOwn(SUBREDDIT_PRESETS, category)) continue;
       const presetKey = category as keyof typeof SUBREDDIT_PRESETS;
-      if (SUBREDDIT_PRESETS[presetKey]) {
-        for (const sr of SUBREDDIT_PRESETS[presetKey]) {
-          subreddits.add(sr);
-        }
+      for (const sr of SUBREDDIT_PRESETS[presetKey]) {
+        subreddits.add(sr);
       }
     }
 
@@ -68,17 +80,19 @@ export async function analyzeReddit(
       subreddits.add(sr);
     }
 
+    // SEC-003: Validate count before iterating
+    if (request.customSubreddits.length > MAX_CUSTOM_SUBREDDITS) {
+      return { success: false, error: `Too many custom subreddits. Maximum ${MAX_CUSTOM_SUBREDDITS} allowed.` };
+    }
+
     for (const sr of request.customSubreddits) {
+      if (typeof sr !== "string") continue;
       const cleaned = sanitizeSubreddit(sr);
       if (cleaned) subreddits.add(cleaned);
     }
 
     if (subreddits.size === 0) {
       return { success: false, error: "Select at least one subreddit." };
-    }
-
-    if (request.customSubreddits.length > MAX_CUSTOM_SUBREDDITS) {
-      return { success: false, error: `Too many custom subreddits. Maximum ${MAX_CUSTOM_SUBREDDITS} allowed.` };
     }
 
     const searchQuery = request.searchQuery
@@ -111,7 +125,8 @@ export async function analyzeReddit(
     const data = await fetchMultipleSubreddits(options);
     return { success: true, data };
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Unknown error";
-    return { success: false, error: message };
+    // SEC-004: Generic error to avoid leaking internal details
+    console.error("analyzeReddit failed:", error);
+    return { success: false, error: "Request failed. Please try again." };
   }
 }
