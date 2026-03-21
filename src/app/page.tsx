@@ -59,7 +59,8 @@ export default function HomePage() {
       } else {
         setError(result.error);
       }
-    } catch {
+    } catch (error) {
+      console.error("Analysis failed:", error);
       setError("An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
