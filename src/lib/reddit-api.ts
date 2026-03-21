@@ -130,8 +130,10 @@ export async function fetchMultipleSubreddits(
   const { subreddits, listing, timeFrame, limit, searchQuery, after } = options;
 
   if (searchQuery) {
-    const subredditParam = subreddits.length === 1 ? subreddits[0] : undefined;
-    return searchReddit(searchQuery, subredditParam, "relevance", timeFrame, limit, after);
+    // QA-001: Always pass subreddit path to restrict search scope.
+    // For multiple subreddits, use Reddit's multi-sub path (r/sub1+sub2/search.json).
+    const multiSub = subreddits.join("+");
+    return searchReddit(searchQuery, multiSub, "relevance", timeFrame, limit, after);
   }
 
   // Use Reddit's multi-subreddit endpoint: r/sub1+sub2+sub3/listing.json
