@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { fetchSubredditPosts } from "./reddit-api";
+import { fetchSubredditPosts } from "@/lib/reddit-api";
 
 describe("fetchSubredditPosts", () => {
   afterEach(() => {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { sanitizeSearchQuery, sanitizeSubreddit } from "./sanitize";
+import { sanitizeSearchQuery, sanitizeSubreddit } from "@/lib/sanitize";
 
 describe("sanitizeSubreddit", () => {
   it("normalizes a subreddit name", () => {

@@ -21,7 +21,7 @@ const baseRequest = {
 };
 
 async function loadAnalyzeReddit() {
-  const mod = await import("./actions");
+  const mod = await import("@/app/actions");
   return mod.analyzeReddit;
 }
 
